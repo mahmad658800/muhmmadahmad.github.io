@@ -1,13 +1,9 @@
 /* ============================================
-   MUHAMMAD AHMAD — PORTFOLIO JS
+   WAQAR AHMAD — PORTFOLIO JS
    ============================================ */
 
 'use strict';
 
-// ⚠️ IMPORTANT: For the contact form to work, you need to:
-// 1. Sign up at https://www.emailjs.com
-// 2. Create a service and template
-// 3. Replace these values with your own:
 const EMAILJS_PUBLIC_KEY  = 'your_public_key_here';
 const EMAILJS_SERVICE_ID  = 'your_service_id_here';
 const EMAILJS_TEMPLATE_ID = 'your_template_id_here';
@@ -24,8 +20,8 @@ AOS.init({
 const typed = new Typed('#typed-text', {
   strings: [
     'POS Expert',
-    'Odoo Developer',
     'Integration Specialist',
+    'Python Developer',
     'Python Developer',
     'ERP Solutions Builder'
   ],
@@ -49,20 +45,15 @@ function updateNav() {
     navbar.classList.remove('scrolled');
   }
 
-  // Active link — pick the section whose top is closest above the viewport trigger point
-  const triggerPoint = window.scrollY + (navbar.offsetHeight || 70) + 80;
-
-  let current = '';
+  // Active link — highlight whichever section is currently in view
+  const navH = navbar.offsetHeight || 68;
+  const trigger = window.scrollY + navH + 60;
+  let current = sections[0] ? sections[0].getAttribute('id') : '';
   sections.forEach(section => {
-    if (section.offsetTop <= triggerPoint) {
+    if (section.offsetTop <= trigger) {
       current = section.getAttribute('id');
     }
   });
-
-  if (!current && sections.length) {
-    current = sections[0].getAttribute('id');
-  }
-
   navLinks.forEach(link => {
     link.classList.remove('active');
     if (link.getAttribute('href') === `#${current}`) {
@@ -196,6 +187,49 @@ styleSheet.textContent = `
 `;
 document.head.appendChild(styleSheet);
 
+/* ---- Testimonials Slider ---- */
+const track = document.getElementById('testimonialsTrack');
+const dots = document.querySelectorAll('.testi-dot');
+const prevBtn = document.getElementById('testiPrev');
+const nextBtn = document.getElementById('testiNext');
+let currentSlide = 0;
+const totalSlides = track ? track.children.length : 0;
+
+function goToSlide(index) {
+  if (!track) return;
+  currentSlide = (index + totalSlides) % totalSlides;
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentSlide);
+  });
+}
+
+if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+dots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
+
+// Auto-advance
+let autoSlide = setInterval(() => goToSlide(currentSlide + 1), 5000);
+if (track) {
+  track.addEventListener('mouseenter', () => clearInterval(autoSlide));
+  track.addEventListener('mouseleave', () => {
+    autoSlide = setInterval(() => goToSlide(currentSlide + 1), 5000);
+  });
+}
+
+// Touch swipe
+let touchStartX = 0;
+let touchEndX = 0;
+if (track) {
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) goToSlide(diff > 0 ? currentSlide + 1 : currentSlide - 1);
+  }, { passive: true });
+}
+
+
 /* ---- Contact Form ---- */
 (function() {
   if (typeof emailjs !== 'undefined') {
@@ -280,7 +314,7 @@ document.head.appendChild(styleSheet);
   }
   initParticles();
 
-  const colors = ['124,58,237', '167,139,250', '59,130,246'];
+  const colors = ['13,148,136', '45,212,191', '6,182,212'];
 
   function draw() {
     ctx.clearRect(0, 0, width, height);
@@ -310,7 +344,7 @@ document.head.appendChild(styleSheet);
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(124,58,237,${0.08 * (1 - dist / 120)})`;
+          ctx.strokeStyle = `rgba(13,148,136,${0.08 * (1 - dist / 120)})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
