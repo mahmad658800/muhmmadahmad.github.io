@@ -49,14 +49,16 @@ function updateNav() {
     navbar.classList.remove('scrolled');
   }
 
-  // Active link
-  let current = '';
+  // Active link — find which section is currently in view
+  const scrollMid = window.scrollY + window.innerHeight / 3;
+  let current = sections[0].getAttribute('id'); // default to first section
+
   sections.forEach(section => {
-    const sectionTop = section.offsetTop - 90;
-    if (window.scrollY >= sectionTop) {
+    if (scrollMid >= section.offsetTop) {
       current = section.getAttribute('id');
     }
   });
+
   navLinks.forEach(link => {
     link.classList.remove('active');
     if (link.getAttribute('href') === `#${current}`) {
