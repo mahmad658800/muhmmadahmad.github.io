@@ -49,15 +49,19 @@ function updateNav() {
     navbar.classList.remove('scrolled');
   }
 
-  // Active link — find which section is currently in view
-  const scrollMid = window.scrollY + window.innerHeight / 3;
-  let current = sections[0].getAttribute('id'); // default to first section
+  // Active link — pick the section whose top is closest above the viewport trigger point
+  const triggerPoint = window.scrollY + (navbar.offsetHeight || 70) + 80;
 
+  let current = '';
   sections.forEach(section => {
-    if (scrollMid >= section.offsetTop) {
+    if (section.offsetTop <= triggerPoint) {
       current = section.getAttribute('id');
     }
   });
+
+  if (!current && sections.length) {
+    current = sections[0].getAttribute('id');
+  }
 
   navLinks.forEach(link => {
     link.classList.remove('active');
